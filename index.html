@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGPA Calculator – Meme Edition 💀</title>
+  <meta name="description" content="The most entertaining CGPA & GPA calculator ever. VIT grading system. See your CGPA with memes and roasts. Calculate your GPA or CGPA instantly!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <span class="logo-emoji">🎓</span>
+      <span class="logo-text">CGPA<span class="logo-accent">Meme</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#instant-gpa" class="nav-link">⚡ GPA Calc</a>
+      <a href="#cgpa-calc" class="nav-link">📊 CGPA Calc</a>
+      <a href="#contact" class="nav-link">📬 Contact</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="floating-grades">
+    <span class="float-grade g1">S</span>
+    <span class="float-grade g2">A</span>
+    <span class="float-grade g3">F</span>
+    <span class="float-grade g4">B</span>
+    <span class="float-grade g5">C</span>
+    <span class="float-grade g6">💀</span>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">🔥 The Only Calculator That Judges You Back</div>
+    <h1 class="hero-title">
+      <span class="title-line-1">CGPA</span>
+      <span class="title-line-2">CALCULATOR</span>
+      <span class="title-line-3">🎭 Meme Edition</span>
+    </h1>
+    <p class="hero-subtitle">
+      Calculate your GPA / CGPA + get roasted accordingly 💀<br/>
+      Because Excel was not built to handle this level of trauma.
+    </p>
+    <div class="hero-buttons">
+      <a href="#instant-gpa" class="btn btn-primary">⚡ Instant GPA</a>
+      <a href="#cgpa-calc" class="btn btn-secondary">📊 CGPA Calculator</a>
+    </div>
+
+    <div class="hero-image-container">
+      <img src="meme-hero.png" alt="Stressed student calculating CGPA meme" class="hero-meme-img" id="heroMemeImg" />
+    </div>
+  </div>
+
+  <!-- Scrolling meme ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>😭 CGPA below 6? Same bro. Same.</span>
+      <span>🔥 S grade? Parents crying from happiness.</span>
+      <span>📚 Studied for 20 mins. Got A. Didn't study. Got F. Classic.</span>
+      <span>💀 "Attendance shortage + low CGPA" – A horror story</span>
+      <span>😤 "I'll do better next sem" – Every sem since 1st year</span>
+      <span>🎓 Bhai CGPA fix nahi hua toh placement bhi fix nahi hoga</span>
+      <span>🤡 F in Maths? Don't worry, relatability +10 unlocked</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INSTANT GPA SECTION ===== -->
+<section class="section" id="instant-gpa">
+  <div class="section-header">
+    <h2 class="section-title">⚡ Instant GPA Calculator</h2>
+    <p class="section-subtitle">Enter your subjects, credits & grades for ONE semester</p>
+  </div>
+
+  <div class="calculator-card">
+    <div id="gpa-subjects-container">
+      <!-- Subjects injected by JS -->
+    </div>
+
+    <div class="calc-actions">
+      <button class="btn btn-outline" id="addGpaSubject">+ Add Subject</button>
+      <button class="btn btn-primary" id="calcGpa">⚡ Calculate GPA</button>
+      <button class="btn btn-danger" id="resetGpa">🗑 Reset</button>
+    </div>
+
+    <!-- Grade scale reference -->
+    <div class="grade-scale">
+      <h3 class="grade-scale-title">VIT Grade Scale</h3>
+      <div class="grade-badges">
+        <div class="grade-badge" style="--c:#8b5cf6">S <span>10</span></div>
+        <div class="grade-badge" style="--c:#6366f1">A <span>9</span></div>
+        <div class="grade-badge" style="--c:#3b82f6">B <span>8</span></div>
+        <div class="grade-badge" style="--c:#06b6d4">C <span>7</span></div>
+        <div class="grade-badge" style="--c:#10b981">D <span>6</span></div>
+        <div class="grade-badge" style="--c:#f59e0b">E <span>5</span></div>
+        <div class="grade-badge" style="--c:#ef4444">F <span>0</span></div>
+      </div>
+    </div>
+
+    <!-- GPA Result -->
+    <div class="result-card" id="gpa-result" style="display:none;">
+      <div class="result-score-wrap">
+        <div class="result-label">Your GPA</div>
+        <div class="result-score" id="gpa-score-display">—</div>
+        <div class="result-out-of">/ 10.0</div>
+      </div>
+      <div class="meme-display" id="gpa-meme-display">
+        <div class="meme-img-wrap"><div class="meme-emoji" id="gpa-meme-emoji">🤔</div></div>
+        <p class="meme-text" id="gpa-meme-text">Calculating your fate...</p>
+        <p class="meme-subtext" id="gpa-meme-subtext"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CGPA CALCULATOR ===== -->
+<section class="section" id="cgpa-calc">
+  <div class="section-header">
+    <h2 class="section-title">📊 CGPA Calculator</h2>
+    <p class="section-subtitle">Enter GPA & total credits for each semester</p>
+  </div>
+
+  <div class="calculator-card">
+    <div class="semesters-grid" id="semesters-container">
+      <!-- Semester cards injected by JS -->
+    </div>
+
+    <div class="calc-actions" style="margin-top:2rem;">
+      <button class="btn btn-outline" id="addSemester">+ Add Semester</button>
+      <button class="btn btn-primary" id="calcCgpa">📊 Calculate CGPA</button>
+      <button class="btn btn-danger" id="resetCgpa">🗑 Reset</button>
+    </div>
+
+    <!-- CGPA Result -->
+    <div class="result-card" id="cgpa-result" style="display:none;">
+      <div class="result-score-wrap">
+        <div class="result-label">Your CGPA</div>
+        <div class="result-score" id="cgpa-score-display">—</div>
+        <div class="result-out-of">/ 10.0</div>
+      </div>
+      <div class="meme-display" id="cgpa-meme-display">
+        <div class="meme-img-wrap"><div class="meme-emoji" id="cgpa-meme-emoji">🤔</div></div>
+        <p class="meme-text" id="cgpa-meme-text">Calculating your fate...</p>
+        <p class="meme-subtext" id="cgpa-meme-subtext"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section" id="testimonials">
+  <div class="section-header">
+    <h2 class="section-title">💬 Students React</h2>
+    <p class="section-subtitle">Real reactions from real survivors 😭</p>
+  </div>
+  <div class="scroller-wrap">
+    <div class="testimonials-scroller" id="testimonialsScroller">
+      <div class="testimonial-track" id="testimonialTrack">
+        <!-- Cards injected by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="section" id="contact">
+  <div class="section-header">
+    <h2 class="section-title">📬 Get in Touch</h2>
+    <p class="section-subtitle">Send a message (or a cry for help)</p>
+  </div>
+  <div class="contact-card">
+    <form class="contact-form" id="contactForm">
+      <div class="form-group">
+        <label for="contactEmail">Your Email</label>
+        <input type="email" id="contactEmail" name="email" placeholder="your.email@example.com" required />
+      </div>
+      <div class="form-group">
+        <label for="contactSubject">Subject</label>
+        <input type="text" id="contactSubject" name="subject" placeholder="My CGPA is a disaster..." required />
+      </div>
+      <div class="form-group">
+        <label for="contactMessage">Message</label>
+        <textarea id="contactMessage" name="message" rows="5" placeholder="Dear developer, I got an F in everything and..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">🚀 Send Message</button>
+      <div class="form-success" id="formSuccess" style="display:none;">✅ Message sent! We'll reply (unlike your crush)</div>
+    </form>
+    <div class="contact-meme">
+      <div class="contact-meme-emoji">📧</div>
+      <p class="contact-meme-msg">We read every message.<br/>Even the desperate ones at 3AM.</p>
+      <div class="contact-social">
+        <span>📸 Instagram</span>
+        <span>💼 LinkedIn</span>
+        <span>▶️ YouTube</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <span class="logo-emoji">🎓</span>
+      <span class="logo-text">CGPA<span class="logo-accent">Meme</span></span>
+    </div>
+    <p class="footer-copy">© 2025 CGPAMeme. Built with 💜 and excessive amounts of coffee.</p>
+    <p class="footer-disclaimer">*Not affiliated with any university. We're just as lost as you are.</p>
+  </div>
+</footer>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

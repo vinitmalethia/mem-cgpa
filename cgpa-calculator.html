@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalcVerse — CGPA Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f0f;
+    --bg2: #1a1a1a;
+    --bg3: #242424;
+    --bg4: #2e2e2e;
+    --green: #22c55e;
+    --green-dim: #16a34a;
+    --text: #f0f0f0;
+    --muted: #888;
+    --border: #333;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* NAVBAR */
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 100; }
+  .nav-left { display: flex; align-items: center; gap: 10px; }
+  .nav-logo { font-family: 'Space Grotesk', sans-serif; font-size: 22px; }
+  .nav-logo span { color: var(--green); }
+  .badge { background: var(--green); color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; letter-spacing: 0.06em; }
+  .nav-tagline { font-size: 13px; color: var(--muted); }
+  .dark-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); border: 1px solid var(--border); padding: 6px 14px; border-radius: 100px; cursor: pointer; background: var(--bg2); }
+  .toggle-dot { width: 28px; height: 16px; background: var(--green); border-radius: 100px; position: relative; }
+  .toggle-dot::after { content: ''; position: absolute; right: 2px; top: 2px; width: 12px; height: 12px; background: #000; border-radius: 50%; }
+
+  /* HERO */
+  .hero { display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center; padding: 40px 28px 24px; }
+  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: 44px; line-height: 1.1; }
+  .hero h1 span { color: var(--green); }
+  .hero-sub { font-size: 16px; color: var(--muted); margin-top: 10px; }
+  .hero-sub span { color: var(--green); }
+  .doge-wrap { position: relative; text-align: center; }
+  .doge-img { width: 130px; border-radius: 50%; border: 3px solid var(--green); }
+  .speech { background: #fff; color: #000; font-weight: 700; font-size: 13px; padding: 8px 12px; border-radius: 12px; position: absolute; top: -10px; right: -10px; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  .speech::after { content: ''; position: absolute; bottom: -8px; left: 16px; border: 8px solid transparent; border-top-color: #fff; border-bottom: none; }
+
+  /* MAIN LAYOUT */
+  .main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0 28px 28px; }
+
+  /* LEFT PANEL */
+  .panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; }
+  .panel-title { font-size: 16px; font-weight: 600; color: var(--green); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+
+  /* TABLE */
+  .subject-table { width: 100%; border-collapse: collapse; }
+  .subject-table th { font-size: 12px; color: var(--muted); font-weight: 500; text-align: left; padding: 0 0 10px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .subject-table th:nth-child(1) { width: 36px; }
+  .subject-table th:nth-child(3), .subject-table th:nth-child(4) { width: 80px; }
+  .subject-table th:nth-child(5) { width: 36px; }
+  .subject-table td { padding: 5px 4px 5px 0; vertical-align: middle; }
+  .subject-table input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: var(--text); font-size: 14px; font-family: 'Inter', sans-serif; transition: border-color 0.2s; }
+  .subject-table input:focus { outline: none; border-color: var(--green); }
+  .num-input { text-align: center; }
+  .row-num { font-size: 13px; color: var(--muted); text-align: center; }
+  .del-btn { background: none; border: none; cursor: pointer; color: #ef4444; font-size: 16px; padding: 6px; border-radius: 6px; transition: background 0.15s; }
+  .del-btn:hover { background: rgba(239,68,68,0.12); }
+  .add-row-btn { width: 100%; margin-top: 12px; padding: 10px; background: var(--bg3); border: 1px dashed var(--border); border-radius: 8px; color: var(--muted); font-size: 14px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+  .add-row-btn:hover { border-color: var(--green); color: var(--green); background: rgba(34,197,94,0.05); }
+  .btn-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 16px; }
+  .calc-btn { background: var(--green); color: #000; border: none; border-radius: 8px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
+  .calc-btn:hover { background: #16a34a; }
+  .reset-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 13px 18px; color: var(--text); font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
+  .reset-btn:hover { background: var(--bg4); }
+  .safe-note { margin-top: 12px; font-size: 12px; color: var(--muted); text-align: center; background: var(--bg3); padding: 9px; border-radius: 8px; border: 1px solid var(--border); }
+
+  /* RIGHT PANEL */
+  .result-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+  .result-top { text-align: center; }
+  .result-label { font-size: 15px; color: var(--muted); margin-bottom: 6px; }
+  .result-num { font-family: 'Space Grotesk', sans-serif; font-size: 72px; font-weight: 700; color: var(--green); line-height: 1; transition: all 0.4s; }
+  .result-verdict { font-size: 15px; color: var(--muted); margin-top: 8px; min-height: 24px; }
+  .result-verdict span { color: var(--green); font-weight: 600; }
+  .meme-img-wrap { border-radius: 10px; overflow: hidden; background: var(--bg3); min-height: 160px; display: flex; align-items: center; justify-content: center; }
+  .meme-img-wrap img { width: 100%; display: block; border-radius: 10px; }
+  .meme-placeholder { text-align: center; color: var(--muted); font-size: 13px; padding: 30px; }
+  .reality-card { background: #1a1a00; border: 1px solid #444400; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; }
+  .reality-card img { width: 48px; height: 48px; border-radius: 6px; flex-shrink: 0; }
+  .reality-title { font-size: 13px; font-weight: 600; color: #facc15; margin-bottom: 4px; }
+  .reality-text { font-size: 13px; color: #b0b0b0; line-height: 1.5; }
+
+  /* SHARE STRIP */
+  .share-strip { margin: 0 28px 20px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+  .share-mascot { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--green); flex-shrink: 0; }
+  .share-quote { font-size: 14px; color: var(--muted); flex: 1; }
+  .share-quote strong { color: var(--text); }
+  .share-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 18px; color: var(--green); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; transition: background 0.2s; }
+  .share-btn:hover { background: var(--bg4); }
+
+  /* INFO SECTION */
+  .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 28px 28px; }
+  .info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+  .info-card-title { font-size: 15px; font-weight: 600; color: var(--green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .info-card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .formula-box { background: var(--bg3); border-radius: 8px; padding: 14px; text-align: center; font-size: 14px; color: var(--text); margin: 10px 0; font-style: italic; }
+  .formula-box .frac { display: inline-block; text-align: center; vertical-align: middle; }
+  .formula-box .frac > span { display: block; padding: 2px 6px; }
+  .formula-box .frac .top { border-bottom: 1px solid var(--text); }
+  .info-meme { width: 100%; border-radius: 8px; overflow: hidden; margin-top: 12px; background: var(--bg3); }
+  .info-meme img { width: 100%; display: block; border-radius: 8px; }
+  .example-list { font-size: 13px; color: var(--muted); line-height: 2; }
+  .example-list span { color: var(--text); font-weight: 500; }
+
+  /* FAQ */
+  .faq-section { padding: 0 28px 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .faq-title { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .faq-item { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
+  .faq-q { padding: 14px 16px; font-size: 14px; color: var(--text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--bg2); transition: background 0.2s; user-select: none; }
+  .faq-q:hover { background: var(--bg3); }
+  .faq-q .arrow { transition: transform 0.2s; font-size: 16px; color: var(--muted); }
+  .faq-a { font-size: 13px; color: var(--muted); padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s; background: var(--bg3); line-height: 1.6; }
+  .faq-item.open .faq-a { max-height: 200px; padding: 12px 16px; }
+  .faq-item.open .arrow { transform: rotate(180deg); }
+  .faq-meme-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .faq-meme-wrap img { width: 100%; display: block; }
+
+  /* FOOTER */
+  footer { text-align: center; padding: 20px 28px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  footer span { color: #ef4444; }
+
+  @media (max-width: 768px) {
+    .main, .info-grid, .faq-section { grid-template-columns: 1fr; }
+    .hero { grid-template-columns: 1fr; }
+    .doge-wrap { display: none; }
+    .hero h1 { font-size: 32px; }
+    .result-num { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav">
+  <div class="nav-left">
+    <span style="font-size:20px">🧮</span>
+    <div class="nav-logo">Calc<span>Verse</span></div>
+    <div class="badge">STUDENT</div>
+  </div>
+  <div class="nav-tagline">Doing calculations so you don't have to 😎</div>
+  <div class="dark-toggle">
+    Dark Mode <div class="toggle-dot"></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <h1><span>CGPA</span> Calculator</h1>
+    <p class="hero-sub">Because college is hard, but calculating <span>CGPA</span> shouldn't be! 😄</p>
+  </div>
+  <div class="doge-wrap">
+    <div class="speech">Calculate Karo<br>Tension Nahi!</div>
+    <img class="doge-img" src="https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg" alt="Doge">
+  </div>
+</div>
+
+<!-- MAIN TWO-COLUMN -->
+<div class="main">
+
+  <!-- LEFT: Input Panel -->
+  <div class="panel">
+    <div class="panel-title">📚 Enter Your Subjects</div>
+    <table class="subject-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Subject Name</th>
+          <th>Credits</th>
+          <th>Grade Point</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="subject-body">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+    <button class="add-row-btn" onclick="addRow()">+ Add Another Subject</button>
+    <div class="btn-row">
+      <button class="calc-btn" onclick="calculate()">🚀 Calculate CGPA</button>
+      <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+    </div>
+    <div class="safe-note">💾 We'll save your data, don't worry your secrets are safe with us 🔒</div>
+  </div>
+
+  <!-- RIGHT: Result Panel -->
+  <div class="result-panel">
+    <div class="result-top">
+      <div class="result-label">🎉 Your CGPA is 🎉</div>
+      <div class="result-num" id="result-num">—</div>
+      <div class="result-verdict" id="result-verdict">Enter your subjects and hit Calculate</div>
+    </div>
+    <div class="meme-img-wrap" id="meme-wrap">
+      <div class="meme-placeholder">🖼️ Your meme will appear here after calculating</div>
+    </div>
+    <div class="reality-card" id="reality-card">
+      <img src="https://i.imgflip.com/1otk96.jpg" alt="Reality check meme">
+      <div>
+        <div class="reality-title">💡 Reality Check</div>
+        <div class="reality-text" id="reality-text">CGPA won't get you a job,<br>but it can get you past the gatekeepers.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SHARE STRIP -->
+<div class="share-strip">
+  <img class="share-mascot" src="https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg" alt="mascot">
+  <div class="share-quote">
+    Friends: "Kitna CGPA aaya?" &nbsp; You: <strong>"It's complicated..."</strong>
+  </div>
+  <button class="share-btn" onclick="shareResult()">⬆ Share Result ↗</button>
+</div>
+
+<!-- INFO CARDS -->
+<div class="info-grid">
+  <div class="info-card">
+    <div class="info-card-title">🧠 How is CGPA Calculated?</div>
+    <p>CGPA is the weighted average of your grade points based on credits.</p>
+    <div class="info-meme">
+      <img src="https://i.imgflip.com/26am.jpg" alt="Success Kid meme — calculated CGPA like a boss">
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-title">📝 Formula</div>
+    <div class="formula-box">
+      CGPA = <span class="frac"><span class="top">Σ (Credits × Grade Point)</span><span>Σ Credits</span></span>
+    </div>
+    <div class="info-meme">
+      <img src="https://i.imgflip.com/tf3r6.jpg" alt="I don't know what CGPA is meme">
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-title">🎯 Example</div>
+    <div class="example-list">
+      If you have:<br>
+      <span>20</span> Total Credits<br>
+      <span>160</span> Total Grade Points<br><br>
+      Then: CGPA = 160 ÷ 20 = <span>8.00</span>
+    </div>
+    <div class="info-meme">
+      <img src="https://i.imgflip.com/4t0m5.jpg" alt="Spongebob meme — makes everything easy">
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <div>
+    <div class="faq-title">🤔 Frequently Asked Questions</div>
+    <div id="faq-list"></div>
+  </div>
+  <div class="faq-meme-wrap">
+    <img src="https://i.imgflip.com/1e7ql7.jpg" alt="Confused baby meme — still confused? read the FAQs bro!">
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>Made with <span>❤️</span> for students who just wanna pass... and maybe top! 😄</footer>
+
+<script>
+const FAQS = [
+  { q: "What is CGPA?", a: "CGPA (Cumulative Grade Point Average) is the overall grade point average calculated across all semesters. It reflects your overall academic performance throughout your degree." },
+  { q: "How is CGPA different from SGPA?", a: "SGPA (Semester Grade Point Average) is calculated for a single semester, while CGPA is the cumulative average across all semesters combined." },
+  { q: "What is a good CGPA?", a: "Generally 8.0+ is considered excellent, 7.0-8.0 is good, 6.0-7.0 is average, and below 6.0 may affect placement eligibility in many colleges." },
+  { q: "How is CGPA calculated?", a: "CGPA = Σ(Credits × Grade Points) ÷ Σ(Credits). Multiply each subject's credits by its grade point, sum all of those, then divide by the total credits." },
+  { q: "Can I convert CGPA to Percentage?", a: "Yes! Most universities use: Percentage = CGPA × 9.5 (for a 10-point scale). Some use CGPA × 10. Check your university guidelines for the exact multiplier." },
+];
+
+const MEMES = {
+  godTier: {
+    img: "https://i.imgflip.com/4acd7j.jpg",
+    alt: "Leo DiCaprio toast — not bad kid",
+    verdict: "🐐 GOAT Mode Activated! Not bad, kid!",
+    verdictClass: "",
+    reality: "You are literally the chosen one. Please teach the rest of us your ways."
+  },
+  legend: {
+    img: "https://i.imgflip.com/4acd7j.jpg",
+    alt: "Leo DiCaprio toast — respect",
+    verdict: "🔥 Absolute Legend! Parents are proud.",
+    reality: "8+ CGPA and you're still humble? Actually impressive."
+  },
+  solid: {
+    img: "https://i.imgflip.com/1otk96.jpg",
+    alt: "This is fine meme",
+    verdict: "😤 Solid work! Not top rank but holding it down.",
+    reality: "Placement eligible. Sleep schedule: questionable. But hey, you're doing it."
+  },
+  average: {
+    img: "https://i.imgflip.com/1otk96.jpg",
+    alt: "This is fine — dog in burning room",
+    verdict: "🫠 Average Arc. The GPA is 7, the chaos is 10.",
+    reality: "You live in the grey zone. Not failing, not thriving. Thriving-adjacent."
+  },
+  surviving: {
+    img: "https://i.imgflip.com/26am.jpg",
+    alt: "Barely surviving meme",
+    verdict: "🥴 Surviving! Technically still enrolled.",
+    reality: "CGPA won't get you a job, but it can get you past the gatekeepers."
+  },
+  chaos: {
+    img: "https://i.imgflip.com/tf3r6.jpg",
+    alt: "Confused meme",
+    verdict: "💀 Main character of struggle. The plot will twist.",
+    reality: "Some of the best startup founders had this exact CGPA. You're early."
+  }
+};
+
+function getMeme(cgpa) {
+  if (cgpa >= 9.5) return MEMES.godTier;
+  if (cgpa >= 8.5) return MEMES.legend;
+  if (cgpa >= 7.5) return MEMES.solid;
+  if (cgpa >= 6.5) return MEMES.average;
+  if (cgpa >= 5.0) return MEMES.surviving;
+  return MEMES.chaos;
+}
+
+// Build FAQs
+const faqList = document.getElementById('faq-list');
+FAQS.forEach((f, i) => {
+  const div = document.createElement('div');
+  div.className = 'faq-item';
+  div.innerHTML = `<div class="faq-q" onclick="toggleFaq(this)"><span>${f.q}</span><span class="arrow">▾</span></div><div class="faq-a">${f.a}</div>`;
+  faqList.appendChild(div);
+});
+
+function toggleFaq(el) {
+  el.parentElement.classList.toggle('open');
+}
+
+let rowCount = 0;
+function addRow(name = '', credits = '', grade = '') {
+  rowCount++;
+  const tbody = document.getElementById('subject-body');
+  const tr = document.createElement('tr');
+  tr.id = 'row-' + rowCount;
+  tr.innerHTML = `
+    <td class="row-num">${tbody.rows.length + 1}</td>
+    <td><input type="text" placeholder="e.g. Data Structures" value="${name}"></td>
+    <td><input type="number" class="num-input" min="1" max="10" step="0.5" placeholder="4" value="${credits}"></td>
+    <td><input type="number" class="num-input" min="0" max="10" step="1" placeholder="9" value="${grade}"></td>
+    <td><button class="del-btn" onclick="delRow(${rowCount})" title="Remove">🗑</button></td>
+  `;
+  tbody.appendChild(tr);
+  renumber();
+}
+
+function delRow(id) {
+  const el = document.getElementById('row-' + id);
+  if (el) el.remove();
+  renumber();
+}
+
+function renumber() {
+  document.querySelectorAll('#subject-body .row-num').forEach((td, i) => td.textContent = i + 1);
+}
+
+function calculate() {
+  const rows = document.querySelectorAll('#subject-body tr');
+  let totalWt = 0, totalCr = 0, valid = 0;
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const cr = parseFloat(inputs[1].value);
+    const gp = parseFloat(inputs[2].value);
+    if (!isNaN(cr) && !isNaN(gp) && cr > 0 && gp >= 0 && gp <= 10) {
+      totalWt += cr * gp;
+      totalCr += cr;
+      valid++;
+    }
+  });
+
+  if (valid === 0) {
+    alert('Please enter at least one subject with valid credits and grade points!');
+    return;
+  }
+
+  const cgpa = totalWt / totalCr;
+  const meme = getMeme(cgpa);
+
+  document.getElementById('result-num').textContent = cgpa.toFixed(2);
+  document.getElementById('result-verdict').innerHTML = `<span>${meme.verdict}</span>`;
+  document.getElementById('reality-text').innerHTML = meme.reality;
+
+  const wrap = document.getElementById('meme-wrap');
+  wrap.innerHTML = `<img src="${meme.img}" alt="${meme.alt}" style="width:100%;border-radius:10px;">`;
+
+  // Color code
+  const numEl = document.getElementById('result-num');
+  if (cgpa >= 8.5) numEl.style.color = '#22c55e';
+  else if (cgpa >= 7.0) numEl.style.color = '#a78bfa';
+  else if (cgpa >= 5.5) numEl.style.color = '#f59e0b';
+  else numEl.style.color = '#ef4444';
+}
+
+function resetAll() {
+  document.getElementById('subject-body').innerHTML = '';
+  rowCount = 0;
+  document.getElementById('result-num').textContent = '—';
+  document.getElementById('result-num').style.color = '#22c55e';
+  document.getElementById('result-verdict').textContent = 'Enter your subjects and hit Calculate';
+  document.getElementById('meme-wrap').innerHTML = '<div class="meme-placeholder">🖼️ Your meme will appear here after calculating</div>';
+  document.getElementById('reality-text').innerHTML = "CGPA won't get you a job,<br>but it can get you past the gatekeepers.";
+  defaultRows();
+}
+
+function shareResult() {
+  const cgpa = document.getElementById('result-num').textContent;
+  const text = cgpa === '—' ? 'Check out this CGPA Calculator!' : `My CGPA is ${cgpa}! Calculate yours 🚀`;
+  if (navigator.share) {
+    navigator.share({ title: 'CalcVerse CGPA Calculator', text, url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(text + ' — ' + window.location.href).then(() => alert('Copied to clipboard!'));
+  }
+}
+
+function defaultRows() {
+  addRow('Data Structures', 4, 9);
+  addRow('Database Systems', 3, 8);
+  addRow('Operating Systems', 4, 7);
+  addRow('Computer Networks', 3, 8);
+  addRow('Mathematics', 4, 9);
+}
+
+defaultRows();
+</script>
+</body>
+</html>
